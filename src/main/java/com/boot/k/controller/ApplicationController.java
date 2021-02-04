@@ -3,9 +3,8 @@ package com.boot.k.controller;
 import com.boot.k.entity.Application;
 import com.boot.k.error.ApiError;
 import com.boot.k.service.ApplicantNameValidationService;
-import com.boot.k.service.ApplicationService;
+import com.boot.k.service.DefaultApplicationService;
 import com.boot.k.shared.ValidationResult;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,18 +14,18 @@ import java.util.List;
 @RequestMapping("/api/1.0")
 public class ApplicationController {
 
-    private final ApplicationService applicationService;
+    private final DefaultApplicationService defaultApplicationService;
     private final ApplicantNameValidationService applicantNameValidationService;
-    //private final ValidationService<Application> applicantNameValidation;
 
-    public ApplicationController(ApplicationService applicationService, ApplicantNameValidationService applicantNameValidationService){
-        this.applicationService = applicationService;
+
+    public ApplicationController(DefaultApplicationService defaultApplicationService, ApplicantNameValidationService applicantNameValidationService){
+        this.defaultApplicationService = defaultApplicationService;
         this.applicantNameValidationService = applicantNameValidationService;
     }
 
     @GetMapping("/applications")
     public List<Application> getApplications(){
-        return applicationService.getApplications();
+        return defaultApplicationService.getApplications();
     }
 
     @PostMapping("/apply")
@@ -36,6 +35,6 @@ public class ApplicationController {
              ApiError.create("400 Bad Request",validationResult.getMessage(),validationResult.getErrorCode().getCode());
              return ResponseEntity.badRequest().body(validationResult.getMessage());
         }
-       return applicationService.saveApplication(application);
+       return defaultApplicationService.saveApplication(application);
     }
 }
